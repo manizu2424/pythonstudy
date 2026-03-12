@@ -80,8 +80,9 @@ def get_exchange_rate(C_from):
 
     exday_info = soup.find("p", class_="no_exday").get_text(strip=True).replace("전일대비", "").strip()
     # print(f"{country_info} {C_from_name} 실시간 환율: {rate_info} | 전일대비 {c_sign} {exday_info}")
-    return f"{country_info} {C_from_name} 실시간 환율: {rate_info} | 전일대비 {c_sign} {exday_info}"
+    r = f"{country_info} {C_from_name} 실시간 환율: {rate_info} | 전일대비 {c_sign} {exday_info}"
+    return r
 
 
 
-print(get_exchange_rate("싱가"))
+print(get_exchange_rate("미국"))
