@@ -1,0 +1,5 @@
+사용 방법:
+
+빠른 모드(기본): /news com 2
+본문 포함 모드: /news com 2 full
+본문 포함 키워드: full, body, text, true, yes, 1

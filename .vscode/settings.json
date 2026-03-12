@@ -1,0 +1,3 @@
+{
+  "python.analysis.extraPaths": ["./03_crawling/2_"]
+}
