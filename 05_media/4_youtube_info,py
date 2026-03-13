@@ -1,0 +1,57 @@
+from googleapiclient.discovery import build
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Google API 키 설정
+api_key = os.getenv("GOOGLE_API_KEY")
+
+def get_youtube_video_info(video_id):
+    """
+    YouTube 영상 ID를 받아 해당 영상의 제목과 설명을 반환하는 함수.
+    반환값: (제목, 설명)
+    """
+    # YouTube API 클라이언트 생성
+    youtube = build('youtube', 'v3', developerKey=api_key)
+
+    # API 요청: videos.list 메서드 사용하여 영상 정보 가져오기
+    request = youtube.videos().list(
+        part='snippet,statistics',
+        id=video_id
+    )
+    response = request.execute()
+
+    # 응답에서 제목과 설명 추출
+    if 'items' in response and len(response['items']) > 0:
+        video_info = response['items'][0]['snippet']
+        title = video_info['title']
+        description = video_info['description']
+        published_at = video_info['publishedAt']
+        statistics = response['items'][0]['statistics']
+        view_count = statistics.get('viewCount', 'N/A')  # 조회수는 snippet이 아닌 statistics에 있음
+        like_count = statistics.get('likeCount', 'N/A')  # 좋아요 수도 statistics에 있음
+        comment_count = statistics.get('commentCount', 'N/A')  # 댓글 수도 statistics에 있음
+        return title, description, published_at, view_count, like_count, comment_count
+    else:
+        return None, None, None, None, None, None
+
+
+def format_count(value):
+    # 숫자 문자열은 정수로 변환해 천 단위 콤마를 적용하고, 그 외 값은 원본 반환
+    try:
+        return f"{int(value):,}"
+    except (TypeError, ValueError):
+        return value
+
+# 테스트할 YouTube 영상 ID (URL에서 v= 뒤의 부분)
+video_id = "8WYz-UEcLks"
+# video_id = "a3shJk6uxBM"
+# 함수 호출: 제목과 설명 반환
+title, description, published_at, view_count, like_count, comment_count = get_youtube_video_info(video_id)
+print(f"제목: {title}")
+print(f"게시일: {published_at}")
+print(f"조회수: {format_count(view_count)}")
+print(f"좋아요 수: {format_count(like_count)}")
+print(f"댓글 수: {format_count(comment_count)}")
+print(f"설명: {description}")
